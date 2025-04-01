@@ -8,15 +8,13 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
 public class TestRunner {
 
-    public static void main(String[] args) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        ExampleClassForTest exampleClassForTest = new ExampleClassForTest();
-        runTest(exampleClassForTest.getClass());
+    public static void main(String[] args) throws Exception {
+        runTest(ExampleClassForTest.class);
     }
 
     private static void checkBeforeAndAfterTest(Method[] methods) {
@@ -71,10 +69,10 @@ public class TestRunner {
         }
     }
 
-    private static <T> void runTest(Class<T> c) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    private static <T> void runTest(Class<T> c) throws Exception {
         Method[] methods = c.getDeclaredMethods();
         Constructor<T> constructor = c.getDeclaredConstructor();
-        T t = constructor.newInstance();
+        T instance = constructor.newInstance();
         checkBeforeAndAfterTest(methods);
 
 //        Запуск BeforeSuite
@@ -94,7 +92,7 @@ public class TestRunner {
 
         Method method;
         while ((method = queueTests.poll()) != null) {
-            method.invoke(t);
+            method.invoke(instance);
         }
 
 //        Запуск AfterSuite
