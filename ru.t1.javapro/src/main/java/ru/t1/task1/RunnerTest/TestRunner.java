@@ -1,8 +1,8 @@
-package ru.t1.RunnerTest;
+package ru.t1.task1.RunnerTest;
 
-import ru.t1.RunnerTest.annotation.AfterSuite;
-import ru.t1.RunnerTest.annotation.BeforeSuite;
-import ru.t1.RunnerTest.annotation.Test;
+import ru.t1.task1.RunnerTest.annotation.AfterSuite;
+import ru.t1.task1.RunnerTest.annotation.BeforeSuite;
+import ru.t1.task1.RunnerTest.annotation.Test;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;

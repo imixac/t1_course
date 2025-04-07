@@ -1,4 +1,4 @@
-package ru.t1.RunnerTest.annotation;
+package ru.t1.task1.RunnerTest.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,5 +7,5 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface BeforeSuite {
+public @interface AfterSuite {
 }
