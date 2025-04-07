@@ -1,4 +1,4 @@
-package ru.t1.RunnerTest.annotation;
+package ru.t1.task1.RunnerTest.annotation;
 
 import java.lang.annotation.*;
 
