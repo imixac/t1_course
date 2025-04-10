@@ -3,6 +3,7 @@ package ru.t1.task2;
 import ru.t1.task2.enums.Profession;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Main {
@@ -27,20 +28,21 @@ public class Main {
 
     //    Найдите в списке целых чисел 3-е наибольшее число (пример: 5 2 10 9 4 3 10 1 13 => 10)
     static void getThreeOfMax() {
-        int threeMax = Stream.of(5, 2, 10, 9, 4, 3, 10, 1, 13)
+        Optional<Integer> threeMax = Stream.of(5, 2, 10, 9, 4, 3, 10, 1, 13)
                 .sorted(Comparator.reverseOrder())
-                .toList().get(2);
-        System.out.println(threeMax);
+                .skip(2).findFirst();
+
+        System.out.println(threeMax.orElse(null));
     }
 
     //    Найдите в списке целых чисел 3-е наибольшее «уникальное» число (пример: 5 2 10 9 4 3 10 1 13 => 9, в отличие от прошлой задачи здесь разные 10 считает за одно число)
     static void findMaxUniqThree() {
-        int threeUniqMax = Stream.of(5, 2, 10, 9, 4, 3, 10, 1, 13)
+        Optional<Integer> threeUniqMax = Stream.of(5, 2, 10, 9, 4, 3, 10, 1, 13)
                 .distinct()
                 .sorted(Comparator.reverseOrder())
-                .toList().get(2);
-        System.out.println(threeUniqMax);
+                .skip(2).findFirst();
 
+        System.out.println(threeUniqMax.orElse(null));
     }
 
     //    Имеется список объектов типа Сотрудник (имя, возраст, должность), необходимо получить список имен 3 самых старших сотрудников с должностью «Инженер», в порядке убывания возраста
@@ -58,8 +60,7 @@ public class Main {
         List<String> engineerNames = workers.stream()
                 .filter(worker -> worker.getProfession() == Profession.ENGINEER)
                 .sorted(Comparator.comparing(Worker::getAge).reversed())
-                .map(Worker::getName)
-                .toList().subList(0, 3);
+                .map(Worker::getName).limit(3).toList();
 
         System.out.println(engineerNames);
     }
@@ -79,6 +80,7 @@ public class Main {
         OptionalDouble avg = workers.stream()
                 .filter(worker -> worker.getProfession() == Profession.ENGINEER)
                 .mapToInt(Worker::getAge).average();
+
         System.out.println(avg.getAsDouble());
     }
 
@@ -86,24 +88,19 @@ public class Main {
     static void getLongWord() {
         String[] words = {"qwe", "qweqwe", "asd", "q"};
 
-        String longWord =Arrays.stream(words)
-                .max(Comparator.comparingInt(String::length)).get();
+        Optional<String> longWord =Arrays.stream(words)
+                .max(Comparator.comparingInt(String::length));
 
-        System.out.println(longWord);
+        System.out.println(longWord.orElse(null));
     }
 
     //    Имеется строка с набором слов в нижнем регистре, разделенных пробелом. Постройте хеш-мапы, в которой будут хранится пары: слово - сколько раз оно встречается во входной строке
     static void createdRepeatWords(String str) {
-        Map<String, Integer> repeatedWords = new HashMap<>();
-        Arrays.stream(str.split(" ")).forEach(w -> {
-            if (!repeatedWords.containsKey(w)) {
-                repeatedWords.put(w, 1);
-            } else {
-                repeatedWords.put(w, repeatedWords.get(w) + 1);
-            }
-        });
+        Map<String, Long> repeatedArr =
+                Arrays.stream(str.split(" "))
+                        .collect(Collectors.groupingBy(String::toString, Collectors.counting()));
 
-        System.out.println(repeatedWords);
+        System.out.println(repeatedArr);
     }
 
     //    Отпечатайте в консоль строки из списка в порядке увеличения длины слова, если слова имеют одинаковую длины, то должен быть сохранен алфавитный порядок
@@ -123,11 +120,12 @@ public class Main {
                 "sdfsdfsdfsdf asd df df df"
         };
 
-        Optional<Optional<String>> s = Arrays.stream(words)
-                .map(o -> Arrays.stream(o.split(" "))
-                        .max(Comparator.comparingInt(String::length)))
-                .findFirst();
+        Optional<String> maxInMatrix = Arrays.stream(words)
+                .flatMap(o -> Arrays.stream(o.split(" ")))
+                .toList()
+                .stream()
+                .max(Comparator.comparingInt(String::length));
 
-        System.out.println(s.get().get());
+        System.out.println(maxInMatrix.orElse(null));
     }
 }
