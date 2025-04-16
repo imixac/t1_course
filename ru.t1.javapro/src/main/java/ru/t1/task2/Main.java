@@ -32,7 +32,7 @@ public class Main {
                 .sorted(Comparator.reverseOrder())
                 .skip(2).findFirst();
 
-        System.out.println(threeMax.orElse(null));
+        System.out.println(threeMax.orElse(0));
     }
 
     //    Найдите в списке целых чисел 3-е наибольшее «уникальное» число (пример: 5 2 10 9 4 3 10 1 13 => 9, в отличие от прошлой задачи здесь разные 10 считает за одно число)
@@ -42,7 +42,7 @@ public class Main {
                 .sorted(Comparator.reverseOrder())
                 .skip(2).findFirst();
 
-        System.out.println(threeUniqMax.orElse(null));
+        System.out.println(threeUniqMax.orElse(0));
     }
 
     //    Имеется список объектов типа Сотрудник (имя, возраст, должность), необходимо получить список имен 3 самых старших сотрудников с должностью «Инженер», в порядке убывания возраста
@@ -91,7 +91,7 @@ public class Main {
         Optional<String> longWord =Arrays.stream(words)
                 .max(Comparator.comparingInt(String::length));
 
-        System.out.println(longWord.orElse(null));
+        System.out.println(longWord.orElse(""));
     }
 
     //    Имеется строка с набором слов в нижнем регистре, разделенных пробелом. Постройте хеш-мапы, в которой будут хранится пары: слово - сколько раз оно встречается во входной строке
@@ -122,10 +122,8 @@ public class Main {
 
         Optional<String> maxInMatrix = Arrays.stream(words)
                 .flatMap(o -> Arrays.stream(o.split(" ")))
-                .toList()
-                .stream()
                 .max(Comparator.comparingInt(String::length));
 
-        System.out.println(maxInMatrix.orElse(null));
+        System.out.println(maxInMatrix.orElse(""));
     }
 }
