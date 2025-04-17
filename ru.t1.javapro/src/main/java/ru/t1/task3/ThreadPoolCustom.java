@@ -1,32 +1,37 @@
 package ru.t1.task3;
 
 import java.util.LinkedList;
-import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-public class ThreadPoolCustom implements Executor,Runnable {
+public class ThreadPoolCustom implements Runnable{
+    private final Object monitor = new Object();
+    private Thread[] threads;
     private final LinkedList<Runnable> tasks = new LinkedList<>();
-    private volatile boolean isRunning = true;
+    private AtomicBoolean isRunning = new AtomicBoolean(true);
 
     public ThreadPoolCustom(int nThreads) {
+        threads = new Thread[nThreads];
         for (int i = 0; i < nThreads; i++) {
-            new Thread(this).start();
+            threads[i] = new Thread(this);
+            threads[i].start();
         }
     }
 
-    @Override
     public void execute(Runnable command) {
-        if (isRunning) {
-            tasks.offer(command);
+        synchronized (monitor) {
+            if (isRunning.get()) {
+                tasks.offer(command);
+            }
+            monitor.notify();
         }
     }
 
     public void shutdown() {
-        isRunning = false;
+        isRunning.set(false);
     }
 
-    @Override
     public void run() {
-        while (isRunning) {
+        while (isRunning.get()) {
             Runnable task = tasks.poll();
             randomTimeOut();
             if (task != null) {
