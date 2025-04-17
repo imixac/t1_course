@@ -3,7 +3,7 @@ package ru.t1.task3;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class ThreadPoolCustom implements Runnable{
+public class ThreadPoolCustom {
     private final Object monitor = new Object();
     private Thread[] threads;
     private final LinkedList<Runnable> tasks = new LinkedList<>();
@@ -12,7 +12,16 @@ public class ThreadPoolCustom implements Runnable{
     public ThreadPoolCustom(int nThreads) {
         threads = new Thread[nThreads];
         for (int i = 0; i < nThreads; i++) {
-            threads[i] = new Thread(this);
+            Runnable runnable = () -> {
+                while (isRunning.get()) {
+                    Runnable task = tasks.poll();
+                    randomTimeOut();
+                    if (task != null) {
+                        task.run();
+                    }
+                }
+            };
+            threads[i] = new Thread(runnable);
             threads[i].start();
         }
     }
@@ -28,16 +37,6 @@ public class ThreadPoolCustom implements Runnable{
 
     public void shutdown() {
         isRunning.set(false);
-    }
-
-    public void run() {
-        while (isRunning.get()) {
-            Runnable task = tasks.poll();
-            randomTimeOut();
-            if (task != null) {
-                task.run();
-            }
-        }
     }
 
     private void randomTimeOut() {
