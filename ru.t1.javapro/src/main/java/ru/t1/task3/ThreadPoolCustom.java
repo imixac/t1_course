@@ -5,11 +5,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ThreadPoolCustom {
     private final Object monitor = new Object();
-    private Thread[] threads;
+    private final Thread[] threads;
     private final LinkedList<Runnable> tasks = new LinkedList<>();
     private AtomicBoolean isRunning = new AtomicBoolean(true);
 
     public ThreadPoolCustom(int nThreads) {
+        if (nThreads <= 0) {
+            throw new IllegalArgumentException("Размер пула должен быть больше 0");
+        }
         threads = new Thread[nThreads];
         for (int i = 0; i < nThreads; i++) {
             Runnable runnable = () -> {
